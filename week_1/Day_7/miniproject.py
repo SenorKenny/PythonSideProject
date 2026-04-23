@@ -13,9 +13,13 @@ def task_adder(numberoftasks):
     return random_list
 
 def task_printer(tasklist):
-    print("\n Your tasks today are: ")
-    for x in range(len(tasklist)):
-        print(tasklist[x])
+    with open("NewTasks.txt",'w') as file:
+        file.write("Your tasks today are")
+    
+    with open("NewTasks.txt", 'a') as file:
+            for x in range(len(tasklist)):
+                file.write("\n"+tasklist[x])
+
 def task_processor(sametaxlist):
     i=0
     while i<len(sametaxlist):
@@ -23,4 +27,5 @@ def task_processor(sametaxlist):
         i+=1
 
 our_new_list=task_adder(num_task)
-print(len(our_new_list))
+task_printer(our_new_list)
+task_processor(our_new_list)
