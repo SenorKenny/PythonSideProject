@@ -31,7 +31,7 @@ def  url_requester(url,Timeout_val=None,Param_val=None,header_val=None):
             print("Reader timeout. Server may be busy ")
         except requests.HTTPError as error:
             print(f"HTTP error code: {error}")
-            return
+            return None, response.status_code
         except Exception as othererror:
             print(f"Error is : {othererror}")
         print(f"retrying..")
@@ -40,6 +40,13 @@ def  url_requester(url,Timeout_val=None,Param_val=None,header_val=None):
     return None,None
 
 #Just a simple comprehension buy category. Decision making will be separate function.
+#
+#
+#
+## Consider making some type of error build up. 
+# If main loop keeps failing multiple time, exit the code or
+# extend the duration of sleep by an amount for a number of times until the code gives up.
+
 def json_parser(json_file):
     try:
         if json_file is None:
@@ -49,7 +56,6 @@ def json_parser(json_file):
             print(f"Some error unbeknownst to me: {error}")
     
     cat=os.getenv("TARGET_CATEGORY").lower()
-    print(cat)
     wanted_products=[x for x in json_file if x.get("category").lower()==cat]
     return wanted_products
 
@@ -71,35 +77,71 @@ def decision_maker(productlist):
     print(minbuyprice)
     print(maxwatchprice)
     print(minwatchprice)
-    watch_list=[x for x in productlist if maxwatchprice>x.get("price",0)>minwatchprice]
+    comparison_watch_list=[x for x in productlist if maxwatchprice>x.get("price",0)>minwatchprice]
     buy_list=[x for x in productlist if maxbuyprice>x.get("price",0)>minbuyprice]
     # COMPARE.
     # First, confirm there is no json. If not, return our lists. If there i
+    #Watch list is the current loops iteration
+    #Goal, make 3 watch lists. first_run, 
     try:
         with open("WatchList.json","r") as file:
-            compared_watch=json.load(file)
+            _1stwatch=json.load(file)
     except FileNotFoundError:
-        compared_watch=[]
+        _1stwatch=[]
     except Exception as error:
         print(f"Other error found: {error}")
         return
-    if not compared_watch:
-        compared_watch=watch_list
+    if not _1stwatch:
+        _1stwatch=comparison_watch_list
     else:
 
-        #watch_list[1-10].get("title") is not in compared_watch. add it to compared_watch
+        #comparison_watch_list[1-10].get("title") is not in _1stwatch. add it to _1stwatch
         #same idea with buy list vs bought.
+        if #condition for intialization :
+            road_map={x.get("title"):x.copy() for x in _1stwatch} ## THIS IS THE ORIGINAL AND PERSISTENT. _1stwatch!
         
-        for potential_product in watch_list:
-            for current_product in compared_watch:
-                if current_product.get("title")!=potential_product.get("title"):
-                    addvalue=1
-                    continue
-                else:
-                    addvalue=0
-                    break
-            if addvalue == 1:
-                compared_watch.append(potential_product)
+        for product in comparison_watch_list:
+                name=product.get("title")
+                if name not in road_map:
+                    _1stwatch.append(product.copy())
+                    road_map[name]=product.copy()
+                else: 
+                    if product.get("price") < road_map.get(name).get("price"):
+                        road_map.get(name)["price"]=product.get("price")
+        #Now we move on to buying decisions
+        for products in _1stwatch:
+            name=products.get("title")
+            if name in road_map:
+                if products.get("price")*.75 > road_map[name].get("price"):
+                    buy_list.append(products)
+        return buy_list,_1stwatch,road_map
+    
+    def buyer(buy_list,_1stwatch,road_map):
+    
+    
+    #add checker above for none ig
+
+        for products in buy_list:
+            name=products.get("title")
+            if random.randint(1,6)<= 3:
+                print(f"purchasing {name}")
+                road_map.pop(name)
+                for originals in _1stwatch:
+                    if name in originals.get("title"):
+                        del originals
+
+        
+                    
+
+
+            
+
+            ## done, i think
+            #next goal, if it is in there, and theres a price change, update price.. could probably add it to
+            #original loop. going to try it the set dictionary.
+
+            #test_set_dictionary={x.get("title") for x in _1stwatch}
+        
 
 
 
