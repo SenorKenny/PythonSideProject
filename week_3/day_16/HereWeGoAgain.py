@@ -74,7 +74,7 @@ def json_parser(json_file,schema,purchased):
                       schema[name]["temp_price"]=price
                       schema[name]["price_history"].add(price)
                       first_time=str(datetime.datetime.now())
-                      schema[name][last_time].append(first_time)
+                      schema[name]["last_time"].append(first_time)
                       boolean_dictionary["watch_update"]=True
             else:
                  continue
@@ -109,7 +109,7 @@ def json_parser(json_file,schema,purchased):
                     "status":status,
                     "bought":bought,
                     "first_seen":first_time,
-                    "last_seen":last_time
+                    "last_time":last_time
                     }
             schema[name]=schemadetails
     return boolean_dictionary
@@ -132,11 +132,11 @@ def decision_maker(schema,boolean_dictionary):
             if "temp_price" in values:
                 buyprice=0.75*statistics.median(values["price_history"])
                 if buyprice>values["temp_price"]:
-                    values["statues"]="buying"
+                    values["status"]="buying"
                     boolean_dictionary["buying"]=True
-                    values.popitem()
+                    values.popitem("temp_price")
                 else:
-                    values.pop()
+                    values.popitem("temp_price")
     if boolean_dictionary["item_entry"]: 
         for name in schema: #this updates for items not yet listed
             if schema[name]["status"] == "N/A":
