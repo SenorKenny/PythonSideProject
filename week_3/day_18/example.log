@@ -1,0 +1,57 @@
+ERROR:root:purchases.json not found
+Traceback (most recent call last):
+  File "c:\Users\adria\repos\PythonSideProject\week_3\day_18\storage.py", line 16, in load_files
+    with open("products.json","r") as file:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'products.json'
+ERROR:root:purchases.json not found
+Traceback (most recent call last):
+  File "c:\Users\adria\repos\PythonSideProject\week_3\day_18\storage.py", line 31, in load_files
+    with open("purchases.json","r") as file:
+         ~~~~^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'purchases.json'
+INFO:__main__:Loop 1
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): fakestoreapi.com:443
+DEBUG:urllib3.connectionpool:https://fakestoreapi.com:443 "GET /products HTTP/1.1" 200 None
+INFO:root:connection succesful
+DEBUG:parser:skipping product
+INFO:parser:Adding new item to schema
+INFO:parser:Adding new item to schema
+INFO:parser:Adding new item to schema
+INFO:parser:Adding new item to schema
+DEBUG:parser:skipping product
+DEBUG:parser:skipping product
+INFO:decision:Product in Schema changed to BUYING
+INFO:decision:Product in schema changed from N/A to status
+INFO:decision:Product in schema changed from N/A to status
+INFO:decision:Product in schema changed from N/A to status
+INFO:decision:purchasing wd 2tb elements portable external hard drive - usb 3.0
+DEBUG:decision:Made changes to schema
+INFO:root:Updating products.json
+INFO:root:Updating purchases.json
+INFO:root:adding info to Logger_summary
+INFO:__main__:Loop complete, sleeping for 10 seconds
+INFO:__main__:Loop 2
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): fakestoreapi.com:443
+DEBUG:urllib3.connectionpool:https://fakestoreapi.com:443 "GET /products HTTP/1.1" 200 None
+INFO:root:connection succesful
+DEBUG:parser:skipping product
+DEBUG:parser:skipping product
+DEBUG:parser:skipping product
+INFO:decision:No products being purchased
+INFO:root:Updating products.json
+INFO:root:adding info to Logger_summary
+INFO:__main__:Loop complete, sleeping for 10 seconds
+INFO:__main__:Loop 3
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): fakestoreapi.com:443
+INFO:__main__:Loop 1
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): fakestoreapi.com:443
+DEBUG:urllib3.connectionpool:https://fakestoreapi.com:443 "GET /products HTTP/1.1" 200 None
+INFO:root:connection succesful
+DEBUG:parser:skipping product
+DEBUG:parser:skipping product
+DEBUG:parser:skipping product
+INFO:decision:No products being purchased
+INFO:storage:Updating products.json
+INFO:storage:adding info to Logger_summary
+INFO:__main__:Loop complete, sleeping for 10 seconds
