@@ -20,3 +20,6 @@ week_4/tests.py
 week_4/books.json
 week_4/progress.json
 week_4/day_23/day_23.log
+week_4/day_27/capture_state.py
+week_4/day_27/auth_state_back_up.json
+week_4/day_27/auth_state.json
