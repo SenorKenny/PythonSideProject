@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 def login(page,username,password):
     try:
-        page.goto("https://www.saucedemo.com/")
+        page.goto("https://www.saucedemo.com/", timeout=5000)
         page.wait_for_selector("[data-test='login-button']")
         print(f'attempting to login with {username}:{password}')
         page.fill("[data-test='username']",username) #in future, havee it so it reads from a .env or .config
@@ -17,13 +17,20 @@ def login(page,username,password):
     except PlaywrightTimeoutError as e:
         raise RuntimeError("Failed to login, retry")
 def load(AllUsers):
+
     for user in AllUsers:
         filepath=user["filepath"]
         if Path(filepath).exists():
-            with open (filepath,'r',encoding='utf-8') as file:
-                user["token"]=json.load(file)
+            try:
+                print(f"Looking for {filepath} at {Path(filepath).resolve()}")
+                with open (filepath,'r',encoding='utf-8') as file:
+                    user["token"]=json.load(file)
+            except json.JSONDecodeError as e:
+                print(f"File corrupted, setting cookie to none: {e}")
         else:
-            pass    
+            pass
+   
+        
 def objcreator(browser,session=None):
         context=browser.new_context(storage_state=session)
         page=context.new_page()
@@ -32,22 +39,29 @@ def saver(filename,storagestate):
      with open(filename,'w',encoding='utf-8') as file:
           json.dump(storagestate,file)
 def idk(user): #Hold this thought
-    
+    print(f"Building context and page for {user["username"]} ")
     user["context"],user["page"]=objcreator(browser,session=user["token"])
 
     if user["token"] is None:
         login(user["page"],user["username"],user["password"])
+        print(f"Saving cookies for {user["username"]}")
         saver(user["filepath"],user["context"].storage_state()) 
-    
+        print(f"Cookies Saved")
     else:
         user["page"].goto("https://www.saucedemo.com/inventory.html")
         try:
             user["page"].locator("div[data-test='inventory-item']").first.wait_for()
         except PlaywrightTimeoutError as e:
-            print("Could not verify inventory page. Session page missing and/or expired")# a log instead in future, error
+            print("Could not verify inventory page. Session page missing and/or expired")
+            print("closing context")
+            user["context"].close() 
+            print(f"Making new context/page for {user["username"]} ")
+            user["context"],user["page"]=objcreator(browser)
+            print("context made")
             login(user["page"],user["username"],user["password"])
+            print(f"Saving cookies for {user["username"]}")
             saver(user["filepath"],user["context"].storage_state())
-
+            print(f"Cookies Saved")
 if __name__=='__main__':        
     LoginData=[("standard_user","secret_sauce"),("problem_user","secret_sauce"),("performance_glitch_user","secret_sauce")]
     ourinfo=[]
@@ -68,7 +82,7 @@ if __name__=='__main__':
         browser=proc.chromium.launch(headless=False)
         for user in ourinfo:
             idk(user)
-            user["page"].pause()
+            
 # how to detect the tokens are expire
 # Try to direct to inventory
 #if we geet redirected to the login, expireed
